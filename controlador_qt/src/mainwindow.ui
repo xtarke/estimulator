@@ -133,15 +133,19 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButtonStart">
+        <widget class="QPushButton" name="pushButtonClose">
          <property name="enabled">
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Start</string>
+          <string>CloseComm</string>
          </property>
         </widget>
        </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QPushButton" name="pushButtonStop">
          <property name="enabled">
@@ -149,6 +153,16 @@
          </property>
          <property name="text">
           <string>Stop</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonStart">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Start</string>
          </property>
         </widget>
        </item>

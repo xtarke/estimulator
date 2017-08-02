@@ -15,6 +15,7 @@ find_package(Qt5Widgets REQUIRED)
 set(controlador_SRC
   src/main.cpp
   src/mainwindow.cpp
+  src/i2cmodule.cpp
 )
 
 # Create code from a list of Qt designer ui files.

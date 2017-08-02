@@ -21,6 +21,12 @@ private slots:
 
     void on_pushButtonOpen_clicked();
 
+    void on_pushButtonStart_clicked();
+
+    void on_pushButtonStop_clicked();
+
+    void on_pushButtonClose_clicked();
+
 private:
     Ui::MainWindow *ui;
     i2cModule *i2comm;
