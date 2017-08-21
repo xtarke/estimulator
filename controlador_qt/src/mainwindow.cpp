@@ -23,9 +23,11 @@ void MainWindow::on_pushButtonSend_clicked()
 {
     int index = ui->comboBox->currentIndex();
     int data = ui->lineEdit->text().toInt();
+    int addr = ui->comboBox_channel->currentIndex();
 
     QString cmd;
     uint8_t cmd_raw[10];
+    uint8_t i2cAddr;
 
 #ifdef DEBUG
     std::cout << "Enviado " <<  data << " para prop: " <<
@@ -112,6 +114,20 @@ void MainWindow::on_pushButtonSend_clicked()
 #endif
     }
 
+    switch (addr) {
+    case 0:
+        i2cAddr = ui->lineEditAddr->text().toInt();
+        break;
+    case 1:
+        i2cAddr = ui->lineEditAddr_2->text().toInt();
+        break;
+    default:
+        break;
+    }
+
+    if (i2comm->get_i2cAddr() != i2cAddr)
+        i2comm->change_i2cAddr(i2cAddr);
+
     i2comm->sendDev(cmd_raw, 7);
 }
 
@@ -145,6 +161,9 @@ void MainWindow::on_pushButtonStop_clicked()
 void MainWindow::on_pushButtonClose_clicked()
 {
     int ret = i2comm->closeDev();
+
+    if (ret !=0 )
+        std::cerr << "Error closing connection\n";
 
     ui->pushButtonSend->setEnabled(false);
     ui->pushButtonStart->setEnabled(false);

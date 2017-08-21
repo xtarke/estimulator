@@ -29,6 +29,19 @@ int i2cModule::openDev(uint8_t i2cAddr_){
      return 0;
 }
 
+int i2cModule::change_i2cAddr(uint8_t _addr){
+
+    if (ioctl(fd, I2C_SLAVE, _addr) < 0) {
+        std::cerr << "Failed to acquire bus access and/or talk to slave.\n";
+        return -1;
+     }
+
+    i2cAddr = _addr;
+
+    return 0;
+}
+
+
 int i2cModule::closeDev(){
     return close(fd);
 }
@@ -55,3 +68,4 @@ int i2cModule::sendDev(uint8_t *buffer, int length){
 
     return bytesSent;
 }
+

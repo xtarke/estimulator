@@ -17,10 +17,10 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>20</y>
-      <width>441</width>
-      <height>151</height>
+      <x>10</x>
+      <y>0</y>
+      <width>546</width>
+      <height>211</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -98,6 +98,20 @@
         </widget>
        </item>
        <item>
+        <widget class="QComboBox" name="comboBox_channel">
+         <item>
+          <property name="text">
+           <string>Canal 1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Canal 2</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="pushButtonSend">
          <property name="enabled">
           <bool>true</bool>
@@ -114,7 +128,7 @@
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>I2cAddr:</string>
+          <string>I2cAddr(1):</string>
          </property>
         </widget>
        </item>
@@ -122,6 +136,20 @@
         <widget class="QLineEdit" name="lineEditAddr">
          <property name="text">
           <string>8</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>I2cAddr(2):</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditAddr_2">
+         <property name="text">
+          <string>9</string>
          </property>
         </widget>
        </item>
