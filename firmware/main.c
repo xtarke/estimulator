@@ -26,6 +26,8 @@ int main(){
 	  sei();
 
 
+	  estSetAmplitute(2048);
+
 	  estStart();
 
 	  // This loop runs forever.
