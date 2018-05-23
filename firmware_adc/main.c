@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 
-#include "estimulador.h"
+//#include "estimulador.h"
 #include "comm.h"
 
 
@@ -21,32 +21,41 @@ int main(){
 	  packate_t rcv_data;
 
 	  initCommModules();
-	  estInit();
+
+	  //estInit();
+
+	  DDRB = 0xff;
+
 
 	  sei();
 
 
-	  estSetAmplitute(2048);
+	  puts("Hello world!");
 
-	  estStart();
+	  //estSetAmplitute(2048);
+
+	  //estStart();
 
 	  // This loop runs forever.
 	  for(;;)
 	  {
 		  if (packageRdy(&rcv_data)){
-			  // printf("%x %x\r", rcv_data.cmd, rcv_data.data);
+			  printf("%x %x\r", rcv_data.cmd, rcv_data.data);
+
+
+
 
 			  switch (rcv_data.cmd){
 			  case START_CMD:
-				  estStart();
+				  //estStart();
 				  break;
 
 			  case STOP_CMD:
-				  estStop();
+				  //estStop();
 				  break;
 
 			  case AMPL:
-				  estSetAmplitute(rcv_data.data);
+				  //estSetAmplitute(rcv_data.data);
 				  break;
 
 			  default:
