@@ -15,6 +15,7 @@ public:
     ~i2cModule();
 
     int sendDev(uint8_t *buffer, int length);
+    int sendReceiveDev(uint8_t *buffer, int length);
 
     int openDev(uint8_t i2cAddr_);
     int closeDev();

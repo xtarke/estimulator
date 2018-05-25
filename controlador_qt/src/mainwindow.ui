@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>561</width>
-    <height>275</height>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -173,6 +173,23 @@
       </layout>
      </item>
      <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QPushButton" name="pushButtonAd">
+         <property name="text">
+          <string>Ler Ad</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLCDNumber" name="lcdNumber"/>
+       </item>
+      </layout>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QPushButton" name="pushButtonStop">
@@ -205,7 +222,7 @@
      <x>0</x>
      <y>0</y>
      <width>561</width>
-     <height>20</height>
+     <height>30</height>
     </rect>
    </property>
   </widget>

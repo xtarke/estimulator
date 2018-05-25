@@ -18,20 +18,20 @@ public:
 
 private slots:
     void on_pushButtonSend_clicked();
-
     void on_pushButtonOpen_clicked();
-
     void on_pushButtonStart_clicked();
-
     void on_pushButtonStop_clicked();
-
     void on_pushButtonClose_clicked();
+    void on_pushButtonAd_clicked();
+
+    void onTimerAdTimeout();
 
     //void on_pushButtonSend_clicked_OLD();
 
 private:
     Ui::MainWindow *ui;
     i2cModule *i2comm;
+    QTimer *timerAd;
 
     #define PKG_INIT 0x7E
     #define PKG_PAYLOAD_SIZE 3

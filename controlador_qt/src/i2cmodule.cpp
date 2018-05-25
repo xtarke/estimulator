@@ -63,9 +63,34 @@ int i2cModule::sendDev(uint8_t *buffer, int length){
 
     if (bytesSent != length) {
         /* ERROR HANDLING: i2c transaction failed */
-        std::cerr << "Failed to write to the i2c bus.\n";
+        std::cerr << "Failed to write to the i2c bus: " << bytesSent << std::endl;
     }
 
     return bytesSent;
 }
+
+int i2cModule::sendReceiveDev(uint8_t *buffer, int length){
+    int bytesSent = 0;
+    int bytesRecv = 0;
+
+    if (fd < 0){
+        std::cerr << "i2c module not opened\n";
+        return -1;
+    }
+
+    bytesSent = write(fd, buffer, length);
+
+    if (bytesSent != length) {
+        /* ERROR HANDLING: i2c transaction failed */
+        std::cerr << "Failed to write to the i2c bus: " << bytesSent << std::endl;
+    }
+
+    bytesRecv = read(fd,buffer,2);
+
+    std::cout << "bytesRecv: " << bytesRecv << std::endl;
+
+
+    return bytesSent;
+}
+
 

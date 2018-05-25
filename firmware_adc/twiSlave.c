@@ -24,6 +24,10 @@
 #define TRUE 1
 #define FALSE 0
 
+
+extern uint16_t adData;
+
+
 // -----------------------------------------------------------------------------
 // Global variables ------------------------------------------------------------
 
@@ -69,7 +73,7 @@ ISR(TWI_vect)
 	switch (TWSR) {
 	case TWI_STX_ADR_ACK:
 	case TWI_STX_DATA_ACK:
-		TWDR = 0x5e; // twiBufferData[twiBufferIndex++];
+		TWDR = (adData & 0xff); // twiBufferData[twiBufferIndex++];
 
 		/* if(twiBufferIndex >= twiBufferSize) {
 			twiBufferIndex = 0;

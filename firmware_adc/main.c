@@ -11,18 +11,21 @@
 #include <util/delay.h>
 
 #include <stdio.h>
+#include "avr_adc.h"
+#include "bits.h"
 
-//#include "estimulador.h"
 #include "comm.h"
 
+void init_ad();
+
+volatile uint16_t adData = 0;
 
 int main(){
 
 	  packate_t rcv_data;
 
+	  init_ad();
 	  initCommModules();
-
-	  //estInit();
 
 	  DDRB = 0xff;
 
@@ -40,7 +43,7 @@ int main(){
 	  for(;;)
 	  {
 		  if (packageRdy(&rcv_data)){
-			  printf("%x %x\r", rcv_data.cmd, rcv_data.data);
+			  printf("%x %x\n\r", rcv_data.cmd, rcv_data.data);
 
 
 
@@ -68,4 +71,24 @@ int main(){
 	return 0;
 }
 
+void init_ad(){
+
+	/* Ref interna de 1V1, Canal 0 */
+	ADCS->AD_MUX = SET(REFS0) | SET(REFS1);
+	/* Habilita AD:
+	 * Conversão contínua
+	 * IRQ
+	 * Prescaler = 128  */
+	ADCS->ADC_SRA = SET(ADEN) | SET(ADSC) | SET(ADATE) |
+				SET(ADPS0) | SET(ADPS1) | SET(ADPS2) | SET(ADIE);
+
+	/* Desabilita parte digital de PC0 */
+	ADCS->DIDr0.BITS.ADC0 = 1;
+
+}
+
+ISR(ADC_vect)
+{
+	adData = ADC;
+}
 

@@ -49,7 +49,7 @@ int main(){
 		byte = i2c_read(0x05, TWI_slaveAddress);
 
 
-		printf("%x\n\r", byte);
+		printf("recebido: %x\n\r", byte);
 
 		//i2c_write(0x00, 0x00, TWI_slaveAddress << 1);
 

@@ -3,6 +3,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "i2cmodule.h"
+#include <QTimer>
+#include <QDebug>
 
 #define DEBUG
 
@@ -12,6 +14,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     i2comm = new i2cModule();
+
+    timerAd = new QTimer(this);
+
+    connect(timerAd, SIGNAL(timeout()), this, SLOT(onTimerAdTimeout()));
+
 }
 
 MainWindow::~MainWindow()
@@ -183,6 +190,51 @@ void MainWindow::on_pushButtonStop_clicked()
     uint8_t cmd[] = {PKG_INIT, STOP_CMD, 0, 0};
     i2comm->sendDev(cmd, sizeof(cmd));
 }
+
+void MainWindow::on_pushButtonAd_clicked(){
+
+    /* Current on/off state */
+    static bool on = false;
+
+//       if (!comm->isReady()){
+//           error_message->showMessage("Serial port is not open!");
+//           return;
+//       }
+
+    if (on == false){
+        timerAd->setInterval(1000);
+        timerAd->start();
+        on = true;
+        ui->pushButtonAd->setChecked(true);
+    }else {
+        timerAd->stop();
+        ui->pushButtonAd->setChecked(false);
+        on = false;
+    }
+
+
+}
+
+void::MainWindow::onTimerAdTimeout(){
+
+    uint8_t i2cAddr = 0;
+    int addr = ui->comboBox_channel->currentIndex();
+
+    uint8_t cmd[4] = {0x01};
+    i2comm->sendReceiveDev(cmd, 1);
+
+    qDebug() << "Sendind to i2c:";
+
+    for (int i=0; i < 4;i++)
+        qDebug() << "\tX: " << (int)cmd[i];
+
+    ui->lcdNumber->display((double)cmd[0]);
+
+
+}
+
+
+
 
 void MainWindow::on_pushButtonClose_clicked()
 {
