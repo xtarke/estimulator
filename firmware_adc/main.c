@@ -9,62 +9,32 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <string.h>
 
 #include <stdio.h>
 #include "avr_adc.h"
 #include "bits.h"
 
 #include "comm.h"
+#include "ad_data.h"
 
 void init_ad();
 
-volatile uint16_t adData = 0;
+volatile adData_t adData;
 
 int main(){
 
-	  packate_t rcv_data;
+	  memset((void *)&adData, 0, sizeof(adData));
 
 	  init_ad();
 	  initCommModules();
 
-	  DDRB = 0xff;
-
-
 	  sei();
-
-
-	  puts("Hello world!");
-
-	  //estSetAmplitute(2048);
-
-	  //estStart();
 
 	  // This loop runs forever.
 	  for(;;)
 	  {
-		  if (packageRdy(&rcv_data)){
-			  printf("%x %x\n\r", rcv_data.cmd, rcv_data.data);
 
-
-
-
-			  switch (rcv_data.cmd){
-			  case START_CMD:
-				  //estStart();
-				  break;
-
-			  case STOP_CMD:
-				  //estStop();
-				  break;
-
-			  case AMPL:
-				  //estSetAmplitute(rcv_data.data);
-				  break;
-
-			  default:
-				  break;
-			  }
-		  }
 	  }
 
 
@@ -73,13 +43,15 @@ int main(){
 
 void init_ad(){
 
-	/* Ref interna de 1V1, Canal 0 */
-	ADCS->AD_MUX = SET(REFS0) | SET(REFS1);
+	/* Ref AVCC, Canal 0
+	 * Bits mais significativos desprezados (ADLAR) */
+	ADCS->AD_MUX = SET(ADLAR) | SET(REFS0);
 	/* Habilita AD:
 	 * Conversão contínua
 	 * IRQ
-	 * Prescaler = 128  */
+	 * Prescaler = 2  */
 	ADCS->ADC_SRA = SET(ADEN) | SET(ADSC) | SET(ADATE) |
+				//SET(ADPS0) | SET(ADPS1) | SET(ADIE);
 				SET(ADPS0) | SET(ADPS1) | SET(ADPS2) | SET(ADIE);
 
 	/* Desabilita parte digital de PC0 */
@@ -89,6 +61,13 @@ void init_ad(){
 
 ISR(ADC_vect)
 {
-	adData = ADC;
+	uint8_t data = ADCH;
+
+	adData.filtered = adData.sum >> ADWINDOW_SHIFT;
+	adData.sum = adData.sum - adData.data[adData.i] + data;
+	adData.data[adData.i] = data;
+	adData.i++;
+
+	adData.i &= (ADWINDOW -1);
 }
 

@@ -22,7 +22,7 @@ void initCommModules(){
 	stdout = &usart_str;
 
 	//UART module init
-	USART_init(_57600, NULL, 0);
+	USART_init(_9600, NULL, 0);
 }
 
 

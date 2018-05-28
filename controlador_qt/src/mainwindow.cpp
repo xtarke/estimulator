@@ -202,7 +202,7 @@ void MainWindow::on_pushButtonAd_clicked(){
 //       }
 
     if (on == false){
-        timerAd->setInterval(1000);
+        timerAd->setInterval(100);
         timerAd->start();
         on = true;
         ui->pushButtonAd->setChecked(true);
@@ -223,12 +223,12 @@ void::MainWindow::onTimerAdTimeout(){
     uint8_t cmd[4] = {0x01};
     i2comm->sendReceiveDev(cmd, 1);
 
-    qDebug() << "Sendind to i2c:";
+//    qDebug() << "Sendind to i2c:";
 
-    for (int i=0; i < 4;i++)
-        qDebug() << "\tX: " << (int)cmd[i];
+//    for (int i=0; i < 4;i++)
+//        qDebug() << "\tX: " << (int)cmd[i];
 
-    ui->lcdNumber->display((double)cmd[0]);
+    ui->lcdNumber->display((double)cmd[1]);
 
 
 }

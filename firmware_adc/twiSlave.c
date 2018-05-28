@@ -16,6 +16,7 @@
 
 #include "comm.h"
 #include "twiSlave.h"
+#include "ad_data.h"
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -25,7 +26,7 @@
 #define FALSE 0
 
 
-extern uint16_t adData;
+extern volatile adData_t adData;
 
 
 // -----------------------------------------------------------------------------
@@ -66,20 +67,18 @@ void TWIPackRead(){
 
 ISR(TWI_vect)
 {
-	uint8_t data;
-
-	cpl_bit(PORTB,PB0);
-
 	switch (TWSR) {
 	case TWI_STX_ADR_ACK:
-	case TWI_STX_DATA_ACK:
-		TWDR = (adData & 0xff); // twiBufferData[twiBufferIndex++];
+		TWDR = TWI_slaveAddress; 	/* Reply address */
 
-		/* if(twiBufferIndex >= twiBufferSize) {
-			twiBufferIndex = 0;
-		}*/
-		//fixed circular buffer: 0-7
-		twiBufferIndex &= 0x3;
+		TWCR =	(1 << TWEN) |
+				(1 << TWIE) | (1 << TWINT) |
+				(1 << TWEA) | (0 << TWSTA) | (0 << TWSTO) |
+				(0 << TWWC);
+		twiBusy = 1;
+		break;
+	case TWI_STX_DATA_ACK:
+		TWDR = adData.filtered; 	/* Reply ADC Data */
 
 		TWCR =	(1 << TWEN) |
 				(1 << TWIE) | (1 << TWINT) |
@@ -108,37 +107,11 @@ ISR(TWI_vect)
 
 	case TWI_SRX_ADR_DATA_ACK:
 	case TWI_SRX_GEN_DATA_ACK:
-		if(twiCommIndex == TRUE) {
-			twiCommIndex = FALSE;
-			//twiBufferIndex = TWDR;
-			data = TWDR;
 
-			/* received a pack init word */
-//			if (data == PKG_INIT){
-//				twiBufferIndex = 0;
-//				packRdy = 0;
-//			}
-			twiBufferData[twiBufferIndex] = TWDR;
-			packRdy = 1;
-
-		}
-		else {
-
-			twiBufferData[twiBufferIndex] = TWDR;
-			twiBufferIndex++;
-
-			/* if(twiBufferIndex >= twiBufferSize) {
-				twiBufferIndex = 0;
-			}*/
-
-			/* All payload is received: *
-			 * package is now ready     */
-			if (twiBufferIndex >= PKG_PAYLOAD_SIZE)
-				packRdy = 1;
-
-			//fixed circular buffer: 0-7
-			twiBufferIndex &= 0x3;
-		}
+		/* Simple communication:
+		 * If any data is received, ADC is reply 		 */
+		twiBufferData[0] = TWDR;
+		packRdy = 1;
 
 		TWCR =	(1 << TWEN) |
 				(1 << TWIE) | (1 << TWINT) |

@@ -87,7 +87,9 @@ int i2cModule::sendReceiveDev(uint8_t *buffer, int length){
 
     bytesRecv = read(fd,buffer,2);
 
-    std::cout << "bytesRecv: " << bytesRecv << std::endl;
+    /* Waiting for 2 bytes */
+    if (bytesRecv != 2)
+        std::cout << "Error: bytesRecv: " << bytesRecv << std::endl;
 
 
     return bytesSent;
