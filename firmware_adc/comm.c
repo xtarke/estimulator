@@ -4,7 +4,9 @@
  *  Created on: Sep 22, 2017
  *      Author: Renan Augusto Starke
  */
-#include "twiSlave.h"
+//#include "twiSlave.h"
+
+#include "TWI_slave.h"
 #include "comm.h"
 
 #include <string.h>
@@ -17,6 +19,7 @@ uint8_t messageBuf[8];
 void initCommModules(){
 	// Initialise TWI module for slave operation. Include address and/or enable General Call.
 	twiSlaveInit(TWI_slaveAddress, messageBuf,8 , 1);
+	//TWI_Slave_Initialise(TWI_slaveAddress);
 
 	//stdout mapped to UART module
 	stdout = &usart_str;
@@ -31,12 +34,12 @@ uint8_t packageRdy(packate_t *my_pkg){
 	uint8_t ret = 0;
 
 	// Check if the TWI Transceiver has completed an operation.
-	if (TWIisPackReady()){
-		my_pkg->cmd = messageBuf[0];
-		my_pkg->data = (messageBuf[1] << 8) | messageBuf[2];
-		TWIPackRead();
-		ret = 1;
-	}
+//	if (TWIisPackReady()){
+//		my_pkg->cmd = messageBuf[0];
+//		my_pkg->data = (messageBuf[1] << 8) | messageBuf[2];
+//		TWIPackRead();
+//		ret = 1;
+//	}
 
 	return ret;
 }

@@ -69,7 +69,7 @@ ISR(TWI_vect)
 {
 	switch (TWSR) {
 	case TWI_STX_ADR_ACK:
-		TWDR = TWI_slaveAddress; 	/* Reply address */
+		TWDR = (uint8_t)adData.filtered; 	/* Reply address */
 
 		TWCR =	(1 << TWEN) |
 				(1 << TWIE) | (1 << TWINT) |
@@ -78,7 +78,7 @@ ISR(TWI_vect)
 		twiBusy = 1;
 		break;
 	case TWI_STX_DATA_ACK:
-		TWDR = adData.filtered; 	/* Reply ADC Data */
+		TWDR =  129;//adData.filtered; 	/* Reply ADC Data */
 
 		TWCR =	(1 << TWEN) |
 				(1 << TWIE) | (1 << TWINT) |

@@ -9,6 +9,7 @@ private:
     const char *devFileName = "/dev/i2c-1";
     uint8_t i2cAddr;
     int fd;
+    bool opened;
 
 public:
     i2cModule();
@@ -23,6 +24,7 @@ public:
     int change_i2cAddr(uint8_t _addr);
 
     uint8_t get_i2cAddr() {return i2cAddr;}
+    bool isOpen(){ return opened;}
 };
 
 #endif // I2CMODULE_H

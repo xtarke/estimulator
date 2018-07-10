@@ -4,6 +4,8 @@
 #include "ui_mainwindow.h"
 #include "i2cmodule.h"
 #include <QTimer>
+#include <QDateTime>
+#include <QFile>
 #include <QDebug>
 
 #define DEBUG
@@ -12,12 +14,19 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    curveAquiEna = false;
     ui->setupUi(this);
     i2comm = new i2cModule();
 
     timerAd = new QTimer(this);
+    timerFile = new QTimer(this);
+    timerStopAq = new QTimer(this);
+
+    outFile = new QFile(this);
+    outFileStream = new QTextStream(outFile);
 
     connect(timerAd, SIGNAL(timeout()), this, SLOT(onTimerAdTimeout()));
+    connect(timerFile, SIGNAL(timeout()), this, SLOT(onTimerFileTimeout()));
 
 }
 
@@ -145,8 +154,7 @@ void MainWindow::on_pushButtonOpen_clicked()
     }
 }
 
-void MainWindow::on_pushButtonStart_clicked()
-{
+void MainWindow::start_estimulator(){
     uint8_t i2cAddr = 0;
     int addr = ui->comboBox_channel->currentIndex();
 
@@ -166,10 +174,11 @@ void MainWindow::on_pushButtonStart_clicked()
 
     uint8_t cmd[] = {PKG_INIT, START_CMD, 0, 0};
     i2comm->sendDev(cmd, sizeof(cmd));
+
+
 }
 
-void MainWindow::on_pushButtonStop_clicked()
-{
+void MainWindow::stop_estimulator(){
     uint8_t i2cAddr = 0;
     int addr = ui->comboBox_channel->currentIndex();
 
@@ -189,17 +198,67 @@ void MainWindow::on_pushButtonStop_clicked()
 
     uint8_t cmd[] = {PKG_INIT, STOP_CMD, 0, 0};
     i2comm->sendDev(cmd, sizeof(cmd));
+
+}
+
+void MainWindow::on_pushButtonStart_clicked()
+{
+
+    start_estimulator();
+
+
+    //    uint8_t i2cAddr = 0;
+//    int addr = ui->comboBox_channel->currentIndex();
+
+//    switch (addr) {
+//    case 0:
+//        i2cAddr = ui->lineEditAddr->text().toInt();
+//        break;
+//    case 1:
+//        i2cAddr = ui->lineEditAddr_2->text().toInt();
+//        break;
+//    default:
+//        break;
+//    }
+
+//    if (i2comm->get_i2cAddr() != i2cAddr)
+//        i2comm->change_i2cAddr(i2cAddr);
+
+//    uint8_t cmd[] = {PKG_INIT, START_CMD, 0, 0};
+//    i2comm->sendDev(cmd, sizeof(cmd));
+}
+
+void MainWindow::on_pushButtonStop_clicked()
+{
+
+    stop_estimulator();
+
+
+//    uint8_t i2cAddr = 0;
+//    int addr = ui->comboBox_channel->currentIndex();
+
+//    switch (addr) {
+//    case 0:
+//        i2cAddr = ui->lineEditAddr->text().toInt();
+//        break;
+//    case 1:
+//        i2cAddr = ui->lineEditAddr_2->text().toInt();
+//        break;
+//    default:
+//        break;
+//    }
+
+//    if (i2comm->get_i2cAddr() != i2cAddr)
+//        i2comm->change_i2cAddr(i2cAddr);
+
+//    uint8_t cmd[] = {PKG_INIT, STOP_CMD, 0, 0};
+//    i2comm->sendDev(cmd, sizeof(cmd));
 }
 
 void MainWindow::on_pushButtonAd_clicked(){
 
     /* Current on/off state */
     static bool on = false;
-
-//       if (!comm->isReady()){
-//           error_message->showMessage("Serial port is not open!");
-//           return;
-//       }
 
     if (on == false){
         timerAd->setInterval(100);
@@ -211,29 +270,103 @@ void MainWindow::on_pushButtonAd_clicked(){
         ui->pushButtonAd->setChecked(false);
         on = false;
     }
-
-
 }
 
 void::MainWindow::onTimerAdTimeout(){
 
-    uint8_t i2cAddr = 0;
-    int addr = ui->comboBox_channel->currentIndex();
+    uint8_t my_I2cAddr = ui->lineEditAddr_AD->text().toInt();
+    uint8_t curr_I2cAddr = i2comm->get_i2cAddr();
+
+    if (curr_I2cAddr != my_I2cAddr)
+        i2comm->change_i2cAddr(my_I2cAddr);
 
     uint8_t cmd[4] = {0x01};
     i2comm->sendReceiveDev(cmd, 1);
 
-//    qDebug() << "Sendind to i2c:";
+    ui->lcdNumber->display((double)cmd[0]);
 
-//    for (int i=0; i < 4;i++)
-//        qDebug() << "\tX: " << (int)cmd[i];
+    i2comm->change_i2cAddr(curr_I2cAddr);
+}
 
-    ui->lcdNumber->display((double)cmd[1]);
+void::MainWindow::onTimerFileTimeout(){
 
+    uint8_t my_I2cAddr = ui->lineEditAddr_AD->text().toInt();
+    uint8_t curr_I2cAddr = i2comm->get_i2cAddr();
+
+    if (curr_I2cAddr != my_I2cAddr)
+        i2comm->change_i2cAddr(my_I2cAddr);
+
+    uint8_t cmd[4] = {0x01};
+    i2comm->sendReceiveDev(cmd, 4);
+
+
+    if (outFile->isOpen()){
+        *outFileStream << (uint32_t)cmd[0] << "\n";
+    }
+
+
+    i2comm->change_i2cAddr(curr_I2cAddr);
+}
+
+void::MainWindow::onTimerStopAqTimeout(){
+    curveAquiEna = false;
+
+    timerFile->stop();
+    ui->pushButtonAd->setDisabled(false);
+    ui->pushButtonCurva->setChecked(false);
+
+    if (outFile->isOpen())
+        outFile->close();
+
+    stop_estimulator();
 
 }
 
+void::MainWindow::on_pushButtonCurva_clicked(){
 
+    bool opened = i2comm->isOpen();
+
+    QString fileName = QDateTime::currentDateTime().toString("ddMMyyyy-hhmmss") + ".csv";
+    std::cout << "Recording: " << fileName.toStdString();
+
+    if (!opened){
+        std::cerr << "I2C not openend!\n";
+        return;
+    }
+
+    int aqInterval = ui->lineEditAddr_AqT->text().toInt();
+    int aqTime = ui->lineEditAddr_Aq->text().toInt();
+
+    if (curveAquiEna == false){
+        timerAd->setInterval(aqInterval);
+        curveAquiEna = true;
+
+        outFile->setFileName(fileName);
+        outFile->open(QIODevice::WriteOnly | QIODevice::Text);
+
+        QTimer::singleShot(aqTime*1000, this, SLOT(onTimerStopAqTimeout()));
+
+        ui->pushButtonAd->setDisabled(true);
+        ui->pushButtonCurva->setChecked(true);
+        timerFile->start();
+
+
+        start_estimulator();
+
+    }else {
+        timerFile->stop();
+        ui->pushButtonAd->setChecked(false);
+        curveAquiEna = false;
+
+        ui->pushButtonAd->setDisabled(false);
+        ui->pushButtonCurva->setChecked(false);
+        outFile->close();
+
+
+        stop_estimulator();
+
+    }
+}
 
 
 void MainWindow::on_pushButtonClose_clicked()
