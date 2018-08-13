@@ -2,7 +2,7 @@
  * comm.h
  *
  *  Created on: Sep 22, 2017
- *      Author: xtarke
+ *      Author: Renan Augusto Starke
  */
 
 #ifndef COMM_H_

@@ -105,7 +105,6 @@ ISR(TIMER1_CAPT_vect){
 
 	set_bit(PULSES_PORT, PULSE_PIN_2);
 	set_bit(PULSES_PORT, PULSE_PIN_1);
-	// set_bit(PORTD, PD4);
 
 	up = 1;
 	TCNT1 = 0;
@@ -136,9 +135,9 @@ void estStart(){
 	if (app.state.on == 0) {
 		app.state.on = 1;
 
-		/* Turn on Relay */
+		/* Turn on Relay: Se descomentado, onda fica monofásica. */
 		set_bit(RELAY_PORT, RELAY_TAP_PIN);
-		set_bit(RELAY_PORT, RELAY_RCA_PIN);
+		clr_bit(RELAY_PORT, RELAY_RCA_PIN);
 
 		clr_bit(LED_ON_PORT, LED_ON);
 
@@ -207,8 +206,8 @@ void estInit(){
 
 static inline void startBurst(){
 	/* Timer 1 used to 1Khz burst @ 50Hz */
-	set_bit(PORTD, 2);
-	set_bit(PORTD, 3);
+	set_bit(PORTD, PULSE_PIN_1);
+	set_bit(PORTD, PULSE_PIN_2);
 
 	TCNT1 = 0;
 
