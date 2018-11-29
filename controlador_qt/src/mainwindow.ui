@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>664</width>
-    <height>320</height>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>10</x>
       <y>0</y>
-      <width>631</width>
-      <height>221</height>
+      <width>636</width>
+      <height>336</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -261,6 +261,66 @@
       </layout>
      </item>
      <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>KC:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditKc">
+         <property name="text">
+          <string>5</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>T. Aquisção (Ta):</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditTa">
+         <property name="text">
+          <string>5</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>T. Integral (Ti):</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditTi">
+         <property name="text">
+          <string>5</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>Pos</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditTi_2">
+         <property name="text">
+          <string>5</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QPushButton" name="pushButtonStop">
@@ -282,9 +342,58 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonCurva_2">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Controlar</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>
+   </widget>
+   <widget class="QPlainTextEdit" name="plainTextEdit">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>410</y>
+      <width>321</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="plainText">
+     <string> PI u(k) = u(k - 1) + q0.e(k) + q1.e(k-1)
+    * q0 = Kc
+    * q1 = -KC ( 1 - Ta / Ti )
+    * Ta = sample time
+    * Ti = integral time     </string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="plainTextEdit_2">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>410</y>
+      <width>321</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="plainText">
+     <string>1) Sempre: OpenComm
+
+2) LerAd: lê o valor da pos. da perna (100 ms)
+
+3) Registrar curva guarda a posição atual 
+
+4) Kc/Ta/Ti/Pos: controle</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
