@@ -61,9 +61,9 @@ void MainWindow::on_pushButtonSend_clicked()
     cmd_raw[3] = (uint8_t) data;
 
     switch (index){
-        // Frequencia de pulsos
+         //Amplitude
         case 0:
-            cmd_raw[1] = PULSE_FREQ;
+            cmd_raw[1] = AMPL;
             break;
 
         //Tempo em alta dos pulsos
@@ -158,6 +158,7 @@ void MainWindow::on_pushButtonOpen_clicked()
         ui->pushButtonClose->setEnabled(true);
         ui->pushButtonAd->setEnabled(true);
         ui->pushButtonCurva->setEnabled(true);
+        ui->pushButtonControl->setEnabled(true);
     }
 }
 
@@ -210,29 +211,7 @@ void MainWindow::stop_estimulator(){
 
 void MainWindow::on_pushButtonStart_clicked()
 {
-
     start_estimulator();
-
-
-    //    uint8_t i2cAddr = 0;
-//    int addr = ui->comboBox_channel->currentIndex();
-
-//    switch (addr) {
-//    case 0:
-//        i2cAddr = ui->lineEditAddr->text().toInt();
-//        break;
-//    case 1:
-//        i2cAddr = ui->lineEditAddr_2->text().toInt();
-//        break;
-//    default:
-//        break;
-//    }
-
-//    if (i2comm->get_i2cAddr() != i2cAddr)
-//        i2comm->change_i2cAddr(i2cAddr);
-
-//    uint8_t cmd[] = {PKG_INIT, START_CMD, 0, 0};
-//    i2comm->sendDev(cmd, sizeof(cmd));
 }
 
 void MainWindow::on_pushButtonStop_clicked()
@@ -240,26 +219,6 @@ void MainWindow::on_pushButtonStop_clicked()
 
     stop_estimulator();
 
-
-//    uint8_t i2cAddr = 0;
-//    int addr = ui->comboBox_channel->currentIndex();
-
-//    switch (addr) {
-//    case 0:
-//        i2cAddr = ui->lineEditAddr->text().toInt();
-//        break;
-//    case 1:
-//        i2cAddr = ui->lineEditAddr_2->text().toInt();
-//        break;
-//    default:
-//        break;
-//    }
-
-//    if (i2comm->get_i2cAddr() != i2cAddr)
-//        i2comm->change_i2cAddr(i2cAddr);
-
-//    uint8_t cmd[] = {PKG_INIT, STOP_CMD, 0, 0};
-//    i2comm->sendDev(cmd, sizeof(cmd));
 }
 
 void MainWindow::on_pushButtonAd_clicked(){
@@ -379,6 +338,8 @@ void::MainWindow::onTimerControlTimeout(){
     //std::cout <<  QDateTime::currentMSecsSinceEpoch() << ":" << angulo <<  ":" << uk << " : " << (userRef + ref_) << std::endl;
     //std::cout <<  QDateTime::currentMSecsSinceEpoch() << ":" << angulo << std::endl;
 
+     *outFileStream << QDateTime::currentMSecsSinceEpoch() << ";"  << uk << ";" << angulo << "\n";
+
     /* Save x[k-1] values */
     uk_ = uk;
     angulo_ = angulo;
@@ -402,19 +363,30 @@ void::MainWindow::on_pushButtonControl_clicked(){
     controlGain_1 = K*(Ts+2*Tc)/2;    //K*(Ts + 2Tc)/2
     controlGain_2 = K*(2*Tc-Ts)/2;    //K*(2Tc - Ts)/2
 
+    QString fileName = "control-" + QDateTime::currentDateTime().toString("ddMMyyyy-hhmmss") + ".csv";
+    std::cout << "Recording: " << fileName.toStdString() << std::endl;
+
     /* x[k-1] values */
     ref_ = getPos();
     uk_  = 0;
     angulo_ = ref_;
 
+    sendControl(0);
+
     if (!controlEna){
-         std::cout << controlGain_0 << " : " << controlGain_1 << " " << controlGain_2 << std::endl;
+        //std::cout << controlGain_0 << " : " << controlGain_1 << " " << controlGain_2 << std::endl;
+        outFile->setFileName(fileName);
+        outFile->open(QIODevice::WriteOnly | QIODevice::Text);
+
+        start_estimulator();
         controlEna = true;
         timerControl->setTimerType(Qt::PreciseTimer);
         timerControl->setInterval(aqTime);
         timerControl->start();
 
     }else{
+        outFile->close();
+        stop_estimulator();
         timerControl->stop();
         controlEna = false;
     }
@@ -496,4 +468,5 @@ void MainWindow::on_pushButtonClose_clicked()
     ui->pushButtonClose->setEnabled(false);
     ui->pushButtonCurva->setEnabled(false);
     ui->pushButtonAd->setEnabled(false);
+    ui->pushButtonControl->setEnabled(false);
 }

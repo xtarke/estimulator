@@ -37,6 +37,11 @@
         <widget class="QComboBox" name="comboBox">
          <item>
           <property name="text">
+           <string>Amplitude</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Frequencia de pulsos</string>
           </property>
          </item>
@@ -83,11 +88,6 @@
          <item>
           <property name="text">
            <string>Tempo de repouso</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Amplitude</string>
           </property>
          </item>
          <item>
@@ -368,7 +368,7 @@
        <item>
         <widget class="QPushButton" name="pushButtonControl">
          <property name="enabled">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="text">
           <string>Controlar</string>
