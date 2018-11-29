@@ -339,6 +339,7 @@ void MainWindow::sendControl(float uk){
     uint8_t i2cAddr;
 
     cmd_raw[0] = PKG_INIT;
+    cmd_raw[1] = AMPL;
     cmd_raw[2] = (uint8_t) (data >> 8);
     cmd_raw[3] = (uint8_t) data;
 
