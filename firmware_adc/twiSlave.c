@@ -55,6 +55,8 @@ void twiSlaveInit(uint8_t twiSlaveAddr, uint8_t *buffer, uint8_t bufferSize, uin
 	twiBufferData = buffer;
 	twiBufferSize = bufferSize;
 
+	DDRB = 1 << PB0;
+
 }
 
 uint8_t TWIisPackReady(){
@@ -69,6 +71,9 @@ ISR(TWI_vect)
 {
 	switch (TWSR) {
 	case TWI_STX_ADR_ACK:
+
+		//cpl_bit(PORTB,PB0);
+
 		TWDR = (uint8_t)adData.filtered; 	/* Reply address */
 
 		TWCR =	(1 << TWEN) |

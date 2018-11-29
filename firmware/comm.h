@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-#define TWI_slaveAddress 0x08
+#define TWI_slaveAddress 0x09
 
 #define PKG_INIT 0x7E
 #define PKG_PAYLOAD_SIZE 3

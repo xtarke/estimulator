@@ -41,7 +41,8 @@ int main(){
 	// This loop runs forever.
 	for(;;)
 	{
-
+		printf("oi -");
+		_delay_ms(1000);
 
 	}
 

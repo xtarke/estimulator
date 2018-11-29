@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 
+/* Address of raspberry is (TWI_slaveAddress >> 1) */
 #define TWI_slaveAddress 0x08
 
 #define PKG_INIT 0x7E
