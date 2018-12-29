@@ -200,8 +200,6 @@ void estInit(){
 	/* Stop Burst */
 	stopBurst();
 
-	app.amplitude = 4000;
-
 }
 
 static inline void startBurst(){
@@ -228,7 +226,7 @@ static inline void stopBurst(){
 static void rampUP(){
 	app.state.rampOn = 1;
 	app.rampValue = 0;
-	app.rampInc = (app.amplitude  <=  100) ? 1 : app.amplitude / 100;
+	app.rampInc = (app.amplitude  <=  100) ? 0 : app.amplitude / 100;
 	rampIte = 0;
 
 	TCCR0B = (1<< CS02) | (1 << CS00);
@@ -240,7 +238,7 @@ static void rampUP(){
 static void rampDown(){
 	app.state.rampOn = 1;
 	app.rampValue = app.amplitude;
-	app.rampInc = (app.amplitude  <=  100) ? 1 : app.amplitude / 100;
+	app.rampInc = (app.amplitude  <=  100) ? 0 : app.amplitude / 100;
 	app.rampInc = -app.rampInc;
 	rampIte = 0;
 
@@ -259,7 +257,7 @@ void estSetAmplitute(uint16_t data){
 	data = data & 0x0fff;
 	app.amplitude = data;
 
-	if (app.state.on)
-		DAC_set_voltage(data);
+	/* if (app.state.on) 	Disable for PID control */
+	DAC_set_voltage(data);
 }
 
