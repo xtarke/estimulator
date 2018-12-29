@@ -239,6 +239,30 @@ void MainWindow::stop_estimulator(){
 
 }
 
+void MainWindow::stop_estimulator_opositor(){
+    uint8_t i2cAddr = 0;
+    int addr = ui->comboBox_channel->currentIndex();
+
+    switch (addr) {
+    case 0:
+        i2cAddr = ui->lineEditAddr_2->text().toInt();
+        break;
+    case 1:
+        i2cAddr = ui->lineEditAddr->text().toInt();
+        break;
+    default:
+        break;
+    }
+
+
+    if (i2comm->get_i2cAddr() != i2cAddr)
+        i2comm->change_i2cAddr(i2cAddr);
+
+    uint8_t cmd[] = {PKG_INIT, STOP_CMD, 0, 0};
+    i2comm->sendDev(cmd, sizeof(cmd));
+
+}
+
 void MainWindow::on_pushButtonStart_clicked()
 {
     start_estimulator();
@@ -418,6 +442,7 @@ void::MainWindow::on_pushButtonControl_clicked(){
     }else{
         outFile->close();
         stop_estimulator();
+        stop_estimulator_opositor();
         timerControl->stop();
         controlEna = false;
     }

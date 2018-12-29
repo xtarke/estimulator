@@ -69,6 +69,7 @@ private:
     void start_estimulator();
     void start_estimulator_opositor();
     void stop_estimulator();
+    void stop_estimulator_opositor();
     int getPos();
     void sendControl(float uk);
 
