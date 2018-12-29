@@ -67,6 +67,7 @@ private:
                     FALL_TIME, IDLE_TIME, AMPL, PULSE_PATT};
 
     void start_estimulator();
+    void start_estimulator_opositor();
     void stop_estimulator();
     int getPos();
     void sendControl(float uk);
