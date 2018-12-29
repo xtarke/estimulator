@@ -372,7 +372,37 @@ void MainWindow::sendControl(float uk){
     i2comm->sendDev(cmd_raw, sizeof(cmd_raw));
 }
 
+void MainWindow::sendControl_opositor(float uk){
+    int addr = ui->comboBox_channel->currentIndex();
+    int data = (int)uk;
+
+    uint8_t cmd_raw[] = {PKG_INIT, 0xff, 0, 0};
+    uint8_t i2cAddr;
+
+    cmd_raw[0] = PKG_INIT;
+    cmd_raw[1] = AMPL;
+    cmd_raw[2] = (uint8_t) (data >> 8);
+    cmd_raw[3] = (uint8_t) data;
+
+    switch (addr) {
+    case 0:
+        i2cAddr = ui->lineEditAddr_2->text().toInt();
+        break;
+    case 1:
+        i2cAddr = ui->lineEditAddr->text().toInt();
+        break;
+    default:
+        break;
+    }
+
+    if (i2comm->get_i2cAddr() != i2cAddr)
+        i2comm->change_i2cAddr(i2cAddr);
+    i2comm->sendDev(cmd_raw, sizeof(cmd_raw));
+}
+
 void::MainWindow::onTimerControlTimeout(){
+    float opositor = 0;
+
     /* x[k] values */
     float uk = 0;
     float angulo = 0;
@@ -380,6 +410,8 @@ void::MainWindow::onTimerControlTimeout(){
 
     userRef = ui->lineEditRef->text().toFloat();
     angulo  = (float) getPos();
+
+    opositor = (float)ui->dial->value();
 
     uk = (userRef + ref_)*controlGain_0 - angulo*controlGain_1 + angulo_*controlGain_2 + uk_;
 
@@ -392,7 +424,7 @@ void::MainWindow::onTimerControlTimeout(){
     //std::cout <<  QDateTime::currentMSecsSinceEpoch() << ":" << angulo <<  ":" << uk << " : " << (userRef + ref_) << std::endl;
     //std::cout <<  QDateTime::currentMSecsSinceEpoch() << ":" << angulo << std::endl;
 
-     *outFileStream << QDateTime::currentMSecsSinceEpoch() << ";"  << uk << ";" << angulo << "\n";
+     *outFileStream << QDateTime::currentMSecsSinceEpoch() << ";"  << uk << ";" << angulo << ";" << opositor << "\n";
 
     /* Save x[k-1] values */
     uk_ = uk;
@@ -402,6 +434,7 @@ void::MainWindow::onTimerControlTimeout(){
     ui->lcdNumberUk->display(uk);
     ui->lcdNumber->display(angulo);
     sendControl(uk);
+    sendControl_opositor(opositor);
 }
 
 void::MainWindow::on_pushButtonControl_clicked(){
