@@ -411,7 +411,7 @@ void::MainWindow::onTimerControlTimeout(){
     userRef = ui->lineEditRef->text().toFloat();
     angulo  = (float) getPos();
 
-    opositor = (float)ui->dial->value();
+    opositor = (float)ui->dial->value()/(float)ui->dial->maximum();
 
     uk = (userRef + ref_)*controlGain_0 - angulo*controlGain_1 + angulo_*controlGain_2 + uk_;
 
@@ -434,7 +434,7 @@ void::MainWindow::onTimerControlTimeout(){
     ui->lcdNumberUk->display(uk);
     ui->lcdNumber->display(angulo);
     sendControl(uk);
-    sendControl_opositor(opositor);
+    sendControl_opositor(opositor*uk);
 }
 
 void::MainWindow::on_pushButtonControl_clicked(){

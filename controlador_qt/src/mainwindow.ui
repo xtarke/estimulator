@@ -357,10 +357,10 @@
        <item>
         <widget class="QDial" name="dial">
          <property name="maximum">
-          <number>1024</number>
+          <number>1000</number>
          </property>
          <property name="value">
-          <number>0</number>
+          <number>100</number>
          </property>
         </widget>
        </item>
