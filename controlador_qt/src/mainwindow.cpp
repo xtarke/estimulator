@@ -444,6 +444,8 @@ void::MainWindow::on_pushButtonControl_clicked(){
     float Tc = ui->lineEditTc->text().toFloat()/1000;
     float K = ui->lineEditK->text().toFloat();
 
+    ui->lcdNumber_opositor->display(ui->dial->value());
+
     maxUk = ui->lineEditRefMaxUk->text().toFloat();
 
     controlGain_0 = K*Ts/2;           //K*Ts / 2
