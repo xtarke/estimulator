@@ -433,6 +433,10 @@ void::MainWindow::onTimerControlTimeout(){
 
     ui->lcdNumberUk->display(uk);
     ui->lcdNumber->display(angulo);
+
+    std::cout << QDateTime::currentMSecsSinceEpoch() << ";"  << uk << ";" << angulo << ";" << opositor*uk << "\n";
+
+
     sendControl(uk);
     sendControl_opositor(opositor*uk);
 }
