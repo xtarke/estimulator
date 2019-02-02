@@ -424,8 +424,6 @@ void::MainWindow::onTimerControlTimeout(){
     //std::cout <<  QDateTime::currentMSecsSinceEpoch() << ":" << angulo <<  ":" << uk << " : " << (userRef + ref_) << std::endl;
     //std::cout <<  QDateTime::currentMSecsSinceEpoch() << ":" << angulo << std::endl;
 
-    *outFileStream << QDateTime::currentMSecsSinceEpoch() << ";"  << uk << ";" << angulo << ";" << opositor << "\n";
-
     /* Save x[k-1] values */
     uk_ = uk;
     angulo_ = angulo;
@@ -436,6 +434,8 @@ void::MainWindow::onTimerControlTimeout(){
 
     sendControl(uk);
     sendControl_opositor(opositor*uk);
+
+    *outFileStream << QDateTime::currentMSecsSinceEpoch() << ";"  << uk << ";" << angulo << ";" << opositor*uk << "\n";
 }
 
 void::MainWindow::on_pushButtonControl_clicked(){
